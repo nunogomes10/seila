@@ -16,9 +16,9 @@ public class DBconection {
     
     public static Connection novaConecao() {
     
-        String url = "jdbc:mysql://localhost:3306/mydb?zeroDateTimeBehavior=convertToNull";  
-        String username = "root";
-        String password = "";
+        String url = "jdbc:mysql://db4free.net:3306/minha?zeroDateTimeBehavior=convertToNull";  
+        String username = "nunogomes";
+        String password = "condicionado";
         Connection connection = null;
         
             try {
