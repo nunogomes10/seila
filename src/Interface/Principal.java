@@ -5,6 +5,7 @@
 package Interface;
 
 import Negocio.Desporto;
+import Negocio.Liga;
 import Negocio.NegDesportos;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -20,10 +21,14 @@ public class Principal extends javax.swing.JFrame {
     /**
      * Creates new form Principal
      */
+    
+    ArrayList<Desporto> desportos = null;
+    
+    
     public Principal() throws SQLException {
         initComponents();
 
-        ArrayList<Desporto> desportos = NegDesportos.todosDesportos();
+        desportos = NegDesportos.todosDesportos();
          
          for (Desporto d : desportos) {
          
@@ -47,6 +52,8 @@ public class Principal extends javax.swing.JFrame {
         ListaLigas = new java.awt.List();
         ligatexto = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
+        inserirJogo = new javax.swing.JButton();
+        atualizar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -57,6 +64,7 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
+        ListaDesportos.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         ListaDesportos.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 ListaDesportosItemStateChanged(evt);
@@ -79,10 +87,36 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
+        ListaLigas.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        ListaLigas.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                ListaLigasItemStateChanged(evt);
+            }
+        });
+
         jButton1.setText("Adicionar Liga");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
+            }
+        });
+
+        inserirJogo.setBackground(new java.awt.Color(204, 204, 255));
+        inserirJogo.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        inserirJogo.setText("Inserir Jogo");
+        inserirJogo.setEnabled(false);
+        inserirJogo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                inserirJogoActionPerformed(evt);
+            }
+        });
+
+        atualizar.setBackground(new java.awt.Color(204, 204, 255));
+        atualizar.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        atualizar.setText("Actualizar");
+        atualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                atualizarActionPerformed(evt);
             }
         });
 
@@ -108,15 +142,24 @@ public class Principal extends javax.swing.JFrame {
                         .addComponent(ligatexto)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1)))
-                .addContainerGap(205, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(inserirJogo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(atualizar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(57, 57, 57))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(82, 82, 82)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(ListaLigas, javax.swing.GroupLayout.DEFAULT_SIZE, 271, Short.MAX_VALUE)
-                    .addComponent(ListaDesportos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(ListaLigas, javax.swing.GroupLayout.DEFAULT_SIZE, 271, Short.MAX_VALUE)
+                        .addComponent(ListaDesportos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(inserirJogo)
+                        .addGap(18, 18, 18)
+                        .addComponent(atualizar)))
                 .addGap(32, 32, 32)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2)
@@ -165,10 +208,21 @@ public class Principal extends javax.swing.JFrame {
         if (evt.getStateChange() == 1) {
         
             String sel = ListaDesportos.getSelectedItem();
-            System.out.println(sel);
-
-            if (sel!=null && sel.equals("Basquetebol")) {
-                ListaLigas.add("Fodasse");
+             inserirJogo.setEnabled(false); 
+            if (sel!=null) {
+                
+                for (Desporto d : desportos) {
+                
+                    if (d.getNome().equals(sel)) {
+                    ListaLigas.removeAll();
+                        for (Liga l : d.getLiga())
+                            
+                            
+                            ListaLigas.add(l.getNome());
+                            
+                    }
+                
+                }
             }
         }
         
@@ -182,20 +236,61 @@ public class Principal extends javax.swing.JFrame {
     // botao de adicionar liga 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        String desporto = desportoTexto.getText();
+        String desporto = ListaDesportos.getSelectedItem(); // desporto selecciondo na lista
+        String liga = ligatexto.getText(); // nome da liga a inserir
         
-        if (!desporto.equals("")) {
+        if (!liga.equals("") && !desporto.equals("")) {
         
-        
-            ListaDesportos.add(desporto);
-            try {
-                NegDesportos.inserirDesporto(desporto);
-            } catch (SQLException ex) {
-                Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            for (Desporto d : desportos) {
+                
+                if (d.getNome().equals(desporto)) {
+                
+                    Liga l = new Liga(0,liga,0);
+                    d.getLiga().add(l);
+                    ListaLigas.add(liga);
+                    try {
+                        NegDesportos.inserirLiga(d.getId(),liga);
+                    } catch (SQLException ex) {
+                        Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                
+                
+                }
+
+            }             
+          
         }
         
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void atualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_atualizarActionPerformed
+       
+        ListaDesportos.removeAll();
+        ListaLigas.removeAll();
+        
+        try {
+            desportos = NegDesportos.todosDesportos();
+        } catch (SQLException ex) {
+            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+         
+         for (Desporto d : desportos) {
+         
+             ListaDesportos.add(d.getNome());
+         
+         }
+    }//GEN-LAST:event_atualizarActionPerformed
+
+    private void inserirJogoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inserirJogoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_inserirJogoActionPerformed
+
+    private void ListaLigasItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_ListaLigasItemStateChanged
+        
+
+             inserirJogo.setEnabled(true);
+
+    }//GEN-LAST:event_ListaLigasItemStateChanged
 
     /**
      * @param args the command line arguments
@@ -238,7 +333,9 @@ public class Principal extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private java.awt.List ListaDesportos;
     private java.awt.List ListaLigas;
+    private javax.swing.JButton atualizar;
     private javax.swing.JTextField desportoTexto;
+    private javax.swing.JButton inserirJogo;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JTextField ligatexto;
