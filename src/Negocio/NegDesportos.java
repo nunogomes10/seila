@@ -5,8 +5,10 @@
 package Negocio;
 
 import Persistencia.Desportos;
+import Persistencia.Equipas;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.TreeMap;
 
 /**
  *
@@ -29,6 +31,18 @@ public class NegDesportos {
     
         Desportos.insertLiga(idDesp, liga);
     }
+
+    public static Liga getLigaByString(String liga) throws SQLException {
+        
+        return Desportos.getLigaByString(liga);
+    }
+    
+    public static TreeMap<String,Equipa> listaEquipas () throws SQLException {
+    
+    
+        return Equipas.getEquipas();
+    }
+
     
     
 }

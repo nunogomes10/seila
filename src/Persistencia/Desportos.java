@@ -46,7 +46,7 @@ public class Desportos {
             
                 while (rss.next()) {
                 
-                    Liga l = new Liga(Integer.parseInt(rss.getString(1)),rs.getString("Nome"),Integer.parseInt(rs.getString(3)));
+                    Liga l = new Liga(Integer.parseInt(rss.getString(1)),rss.getString("Nome"),Integer.parseInt(rss.getString(3)));
                     liga.add(l);
                 }
             
@@ -89,5 +89,23 @@ public class Desportos {
     
     }
 
- 
+    public static Liga getLigaByString(String liga) throws SQLException {
+       
+        Liga l;
+
+        String query = "select * from Liga where Nome = '" + liga + "'";
+        Connection con = DBconection.novaConecao();
+
+        Statement stmt = con.createStatement(); 
+        ResultSet rs = stmt.executeQuery(query);
+
+        rs.next();
+        
+        l = new Liga(Integer.parseInt(rs.getString(1)),rs.getString("Nome"),Integer.parseInt(rs.getString(3)));
+
+        DBconection.fecharconecao(con);
+        
+        return l;     
+        } 
+         
 }
